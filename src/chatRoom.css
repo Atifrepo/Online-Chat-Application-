@@ -1,0 +1,9 @@
+.chatpage{
+    display: grid;
+    grid-template-columns: 20%  50% ;
+    grid-template-rows: 120% 70%;
+    
+}
+.message-sender{
+    margin-left: 10px
+}
