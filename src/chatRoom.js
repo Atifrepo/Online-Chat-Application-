@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField'
 import AppBar from 'material-ui/AppBar';
 import { withStyles } from '@material-ui/core/styles';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import '../chatRoom.css';
+
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 

@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid'
 import TextField from 'material-ui/TextField'
-import Button from '@material-ui/core/Button'
+import RaisedButton from 'material-ui/RaisedButton';
+import InputLabel from '@material-ui/core/InputLabel';
 import * as firebase from 'firebase';
 import AppBar from 'material-ui/AppBar/AppBar';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Button from '@material-ui/core/Button';
+import '../login.css'
 
+import Input from '@material-ui/core/Input';
 const style = theme => ({
     Paper: {
         marginTop: 10, marginBottom: 10, height: 500, backgroundColor: 'inherit', position: 'relative',
@@ -18,6 +23,7 @@ const style = theme => ({
     formControl: {
         margin: theme.spacing.unit * 3,
     },
+    
 })
 
 class Login extends Component {
@@ -63,66 +69,82 @@ class Login extends Component {
         });
 
     }
-    handleChange = event => {
-        this.setState({ value: event.target.value });
-    };
+    // handleChange = event => {
+    //     this.setState({ value: event.target.value });
+    // };
 
-
+SeletGender(event) {
+    this.setState({
+        gender:event.target.value
+    })
+    console.log(this.state.gender)
+}
     render() {
         return (
 
 
             <div>
                 <form>
-                    <div>
+                    <div style={{ backgroundColor: '#3F51B5' }} className="App-header">
                         <AppBar style={{ backgroundColor: '#002171' }} title='تسجيل الدخول' //login// 
                         ></AppBar>
                     </div>
-<div align="center">
-                    <Paper  style={{ paddingRight: 100, marginTop: 200, height: 400, backgroundColor: '#e0e0e0', width: '40%' }}>
-                     <h1>Join Chat</h1>
+                    <div align="center">
+                        <Paper style={{ paddingRight: 100, marginTop: 100, height: 400, backgroundColor: '#3F51B5', width: '40%' }}>
+                            <h1>انضم للمحادثه</h1>
+                            
+                            {/* <InputLabel>Username</InputLabel> */}
+                            <OutlinedInput
+                                placeholder="Enter your username"
+                                id="outlined-name"
+                                style={{ width: '60%' }}
+                                // className={classes.textField}
+                                value={this.state.username}
+                                onChange={this.InputChange.bind(this, 'username')}
+                                margin="normal"
+                                variant="outlined"
+                            />
+                            <br></br>
+                            <br></br>
+<br></br>
+                            {/* <InputLabel>Age</InputLabel> */}
+                            <OutlinedInput
+                                //  name="Username"
+                                placeholder="Enter Age"
+                                style={{ width: '60%' }}
+                                value={this.state.Details.Age}
+                                onChange={this.InputChange.bind(this, "Age")}
+                            //errorText="This field is required!"
 
-                        <TextField
+                            />
+                            <br></br>
+                            <br></br>
 
-                            //  name="Username"
-                            hintText="Enter username"
-                            floatingLabelText="Username"
-                            value={this.state.Details.username}
-                            onChange={this.InputChange.bind(this, "username")}
-                        //errorText="This field is required!"
-
-                        />
-                        <br></br>
-                        <TextField
-                            //  name="Username"
-                            hintText="Enter Age"
-                            floatingLabelText="Age"
-                            value={this.state.Details.Age}
-                            onChange={this.InputChange.bind(this, "Age")}
-                        //errorText="This field is required!"
-
-                        />
-                        <br></br>
-                        <label>Gender:</label>
-                        <div className='radioButton' > <input type='radio' value='Male' name='user' /> Male
+                            <div  style={{ width: '60%' }} className='radioButton'
+                            //onChange={this.SeletGender.bind(this)}
+                             > 
+                            Gender
+                             <input type='radio' value='Male' name='user' /> Male
                           <input type='radio' value='Female' name='user' /> Female
                         </div>
-                        <br></br>
+                            <br></br>
 
 
-                        <TextField
-                            //  name="Username"
-                            hintText="Enter country name"
-                            floatingLabelText="Country"
-                            value={this.state.Details.country}
-                            onChange={this.InputChange.bind(this, "country")}
-                        //errorText="This field is required!"
-                        />
+{/* <InputLabel>country</InputLabel>   */}
+                            <OutlinedInput
+                                //  name="Username"
+                                placeholder="Enter country name"
 
-                        <br></br>
+                                value={this.state.Details.country}
+                                style={{ width: '60%' }}
+                                onChange={this.InputChange.bind(this, "country")}
+                            //errorText="This field is required!"
+                            />
 
-                        <Button variant="contained" onClick={(event) => this.handleClick(event)}><b>login</b></Button>
-                    </Paper>
+                            <br></br>
+<br></br>
+                            <Button variant="contained" color="#E3F2FD" onClick={(event) => this.handleClick(event)}><b>login</b></Button>
+               </Paper>
                     </div>
                 </form>
             </div>

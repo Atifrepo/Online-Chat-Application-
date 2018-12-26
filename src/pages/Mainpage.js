@@ -9,7 +9,7 @@ import ButtonAppBar from './Header'
 import '../mainpage.css'
 import { Input } from '@material-ui/core';
 import Chat from '../chat'
-
+import *as firebase from 'firebase'
 
 const styles = ({
     Paper: { padding: 20, marginTop: 10, marginBottom: 10, height: 400, backgroundColor: 'inherit', },
@@ -18,12 +18,19 @@ export default class MainPage extends Component {
     constructor() {
         super()
         this.state = {
-            users: [
-                'floyd',
-            ],
+            users: [{
+                
+            }],
 
         }
     }
+    // componentDidMount(){
+    //     firebase.database.ref('User').on('value',(snapshot) =>{
+            
+    //     }
+                    
+        
+    // }
     render() {
         return (
             <div style={{ backgroundColor: '#E0E0E0' }}>
