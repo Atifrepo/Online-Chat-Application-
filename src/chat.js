@@ -41,7 +41,7 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        console.log('in component did mount')
+       
         firebase.database().ref('messages/').on('value', (snapshot) => {
 
             const currentMessages = snapshot.val()

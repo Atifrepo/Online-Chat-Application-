@@ -18,19 +18,40 @@ export default class MainPage extends Component {
     constructor() {
         super()
         this.state = {
-            users: [{
-                
-            }],
+            users:
+                []
 
         }
     }
-    // componentDidMount(){
-    //     firebase.database.ref('User').on('value',(snapshot) =>{
-            
-    //     }
-                    
-        
-    // }
+    componentDidMount() {
+        console.log('in component did mount')
+       firebase.database().ref('User/').on('value', snap => {
+            var userobj = snap.val();
+            var key = Object.keys(userobj);
+            let all_users = []
+            for (var i = 0; i < key.length; i++) {
+                var k = key[i];
+                all_users.push({
+
+                    username: userobj[k].username,
+                    Age: userobj[k].Age,
+                    country: userobj[k].country,
+                    //gender:userobj[k].gender,
+                })
+            }
+            this.setState({
+                users: all_users
+
+            })
+            console.log(all_users)
+
+        }
+        )
+
+
+
+    }
+
     render() {
         return (
             <div style={{ backgroundColor: '#E0E0E0' }}>
@@ -50,12 +71,17 @@ export default class MainPage extends Component {
                                 <GridListTile>
 
                                     {/* <List component="ul"> */}
-                                    <ListItem button variant="contained" style={{ backgroundColor: '#424242', }}>
+                                    {this.state.users.map((item, index) => (
 
-                                        <ListItemText style={{ color: '#FFFFFF', }} primary={this.state.users}
+                                        <ListItem button variant="contained" style={{ backgroundColor: '#424242', }}>
 
-                                        />
-                                    </ListItem>
+                                            <ListItemText style={{ color: '#FFFFFF', }} primary={item.username}
+
+                                            />
+
+                                        </ListItem>
+                                    ))}
+
                                     {/* </List> */}
 
                                 </GridListTile>
@@ -70,7 +96,7 @@ export default class MainPage extends Component {
                             <br></br>
                             <Input style={{ backgroundColor: "#e0e0e0", width: '100%', }}
                                 name="search"
-                                placeholder="  search for user..."
+                                placeholder="search for user..."
                                 id="outlined-search"
                                 label="Search field"
                                 type="search"
