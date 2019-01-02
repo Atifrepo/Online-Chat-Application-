@@ -35,7 +35,7 @@ class MenuListComposition extends React.Component {
      
        console.log(error);
      });
-     this.props.push('/');
+     this.props.history.push('/');
      
      }
 

@@ -10,6 +10,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
 import '../login.css'
 
+
 import Input from '@material-ui/core/Input';
 const style = theme => ({
     Paper: {
@@ -38,27 +39,54 @@ class Login extends Component {
                 gender: '',
 
             },
-            token: [],
+           
+           
             // error: 'this is error'
         }
+       
     }
-    handleClick(event) {
-        //console.log()
-        firebase.database().ref('/User').push(
-            {
-                username: this.state.Details.username,
-                country: this.state.Details.country,
-                Age: this.state.Details.Age,
-                gender: this.state.Details.gender
-            }
+   _handleClick = (event) =>{
+        firebase.auth().signInAnonymously().catch(function(error) {
+            
 
-        );
-        if (this.state.Details.username != null) {
-            this.props.history.push('/mainpage')
-        }
+            
+          
+        // if (this.state.Details.username != null) {
+        //     this.props.history.push('/mainpage')
+        // }
 
+      }).then( (succ) => {
+
+       // firebase.auth().onAuthStateChanged(function(user) {
+
+            var userid=0
+          //  if(user){
+              //   userid=firebase.auth().user.uid
+             console.log('user',this.state)
+              firebase.database().ref('User/'+ succ.user.uid).set(
+                 {
+                     username: this.state.Details.username,
+                     country: this.state.Details.country,
+                     Age: this.state.Details.Age,
+                     gender: this.state.Details.gender,
+                    uid:succ.user.uid,
+                
+                     
+                 }
+    
+            );
+     console.log('id'+succ.user.uid)
+            // }else{
+            //  console.log('in else',user)
+            // }
+           
+           
+             // ...
+         //  });
+      })
+    this.props.history.push('/mainpage')
     }
-
+      ;
 
     InputChange(changeValue, event) {
 
@@ -90,9 +118,10 @@ SeletGender(event) {
                         ></AppBar>
                     </div>
                     <div align="center">
+                    
                         <Paper style={{ paddingRight: 100, marginTop: 100, height: 400, backgroundColor: '#3F51B5', width: '40%' }}>
                             <h1>انضم للمحادثه</h1>
-                            
+                           
                             {/* <InputLabel>Username</InputLabel> */}
                             <OutlinedInput
                                 placeholder="Enter your username"
@@ -121,7 +150,8 @@ SeletGender(event) {
                             <br></br>
 
                             <div  style={{ width: '60%' }} className='radioButton'
-                            //onChange={this.SeletGender.bind(this)}
+                            value={this.state.gender}
+                            onChange={this.InputChange.bind(this)}
                              > 
                             Gender
                              <input type='radio' value='Male' name='user' /> Male
@@ -143,7 +173,7 @@ SeletGender(event) {
 
                             <br></br>
 <br></br>
-                            <Button variant="contained" color="#E3F2FD" onClick={(event) => this.handleClick(event)}><b>login</b></Button>
+                            <Button variant="contained" color="#E3F2FD" onClick={(event) => this._handleClick(event)}><b>login</b></Button>
                </Paper>
                     </div>
                 </form>

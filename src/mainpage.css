@@ -1,12 +1,16 @@
 .body{
     background-color: #526dca;
 }
-.TextField[type="text"] {
+/* .TextField[type="text"] {
     background-color: #E0E0E0;
-    width: 50%;
+    width: 50%; */
     /* margin-left: -20px; */
     /* margin-right: -20px; */
-    border: 0px;
+    /* border: 0px;
     border-color: #E0E0E0;
     border-Bottom: #E0E0E0
-}
+} */
+input::-webkit-input-placeholder {
+    color: blue !important;
+    font-size: larger
+    }

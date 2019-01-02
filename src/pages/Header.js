@@ -34,11 +34,11 @@ function ButtonAppBar(props) {
           {/* </Button> */}
           
           
-           <IconButton aria-label="4 pending messages" className={classes.margin}>
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
+            <IconButton aria-label="4 pending messages" className={classes.margin}>
+           <Badge badgeContent={4} color="secondary">
+             <MailIcon />
+           </Badge>
+         </IconButton>
           <MenuListComposition />
           
         </Toolbar>
