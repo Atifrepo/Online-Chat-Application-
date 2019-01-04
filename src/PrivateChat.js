@@ -4,12 +4,25 @@ import *as firebase from 'firebase'
 class PrivateChat extends Component{
     constructor(){
         super();
-
+this.state={
+    Members:[],
+    Messages:[{
+    Message:'',
+    MessageId:'',
+    uid:''
+}
+        
+    ]
+}
     }
     
 componentDidMount(){
-    var ref=firebase.database().ref('private/')
-
+    console.log('in private chat')
+const rootRef=firebase.database().ref().child('Group');
+const speedRef=rootRef.child('Members')
+speedRef.on('value',snap => {
+    
+} )
 }
 render(){
     return(

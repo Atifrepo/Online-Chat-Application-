@@ -13,14 +13,14 @@ import { Input } from '@material-ui/core';
 import Chat from '../chat'
 import *as firebase from 'firebase'
 //  import PrivateChat from '../PrivateChat'
- import Login from './login'
+import Login from './login'
 const styles = ({
-    Paper: { padding: 20, marginTop: 10, marginBottom: 10, height: 400, backgroundColor: 'inherit', overflowY:'auto' },
+    Paper: { padding: 20, marginTop: 10, marginBottom: 10, height: 400, backgroundColor: 'inherit', overflowY: 'auto' },
     listItem: {
         textColor: '#ffffff',
         backgroundColor: '#505050'
     }
-    
+
 
 
 })
@@ -30,7 +30,14 @@ export default class MainPage extends Component {
         this.state = {
             users:
                 [],
-                user:null
+            user: null,
+            Group: [],
+            Members: '',
+            AllMessages: [{
+                Message: '',
+                Sender: ''
+            }]
+
 
         }
     }
@@ -38,39 +45,40 @@ export default class MainPage extends Component {
         console.log('in component did mount')
 
 
-       firebase.database().ref('User/').on('value', snap => {
-                var userobj = snap.val();
+        firebase.database().ref('User/').on('value', snap => {
+            var userobj = snap.val();
             var key = Object.keys(userobj);
             let all_users = []
             for (var i = 0; i < key.length; i++) {
                 var k = key[i];
                 all_users.push({
-
                     username: userobj[k].username,
                     Age: userobj[k].Age,
                     country: userobj[k].country,
                     //gender:userobj[k].gender,
-                    uid:userobj[k].uid
+                    uid: userobj[k].uid
                 })
             }
             this.setState({
                 users: all_users
-
             })
             console.log(all_users)
-
         }
         )
+    }
+    PrivateChat(event) {
+        console.log('in')
+        const GroupChat = {
 
+            Participents: this.state.Members,
+            Messages: this.state.AllMessages,
+            id: this.state.Group.length,
 
+        }
+
+        firebase.database().ref('Group/' + GroupChat.id).set(GroupChat)
 
     }
-    // PrivateChat(event){
-    //     var ref=firebase.database().ref('private/')
-    //     var IsSelected
-        
-        
-    // }
 
     render() {
         return (
@@ -92,18 +100,18 @@ export default class MainPage extends Component {
                                 <GridListTile>
 
                                     <List component="ul">
-                                    {this.state.users.map((item, index) => (
-                                        // <SnackbarContent style={{ background: '#212121' }} message={item.username} />
+                                        {this.state.users.map((item, index) => (
+                                            // <SnackbarContent style={{ background: '#212121' }} message={item.username} />
 
-                                        <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} onClick= {<Login/>}>
+                                            <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} onClick={(event) => this.PrivateChat()}>
 
-                                            {/* <ListItemText style={styles.listItem } primary= */}
-                                            {item.username}
+                                                {/* <ListItemText style={styles.listItem } primary= */}
+                                                {item.username}
 
-                                            {/* /> */}
+                                                {/* /> */}
 
-                                        </ListItem>
-                                    ))}
+                                            </ListItem>
+                                        ))}
 
                                     </List>
 

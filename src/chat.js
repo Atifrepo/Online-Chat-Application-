@@ -61,11 +61,12 @@ class Chat extends Component {
         console.log('message submitted' + this.state.message)
         const nextMessage = {
             id: this.state.messages.length,
-            text: this.state.message ,
+            text: this.state.message,
 
         }
-        firebase.database().ref('messages/' + nextMessage.id).set(nextMessage)
+        firebase.database().ref('messages/' + nextMessage.id).update(nextMessage)
     }
+
     handleEmojiClick = (n, e) => {
         console.log('in handle emoji',e.name)
         
@@ -121,7 +122,7 @@ class Chat extends Component {
                         </RaisedButton>
                         <span id="show-emoji-yes" onClick={this.toogleEmojiState}></span>
                         <div className="emoji-table">
-                        <EmojiPicker onEmojiClick={this.handleEmojiClick} />
+                        {/* <EmojiPicker onEmojiClick={this.handleEmojiClick} /> */}
                         </div>
                     </div>
                 </Paper>
