@@ -1,35 +1,39 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import *as firebase from 'firebase'
 
 class PrivateChat extends Component{
     constructor(){
         super();
-this.state={
-    Members:[],
-    Messages:[{
-    Message:'',
-    MessageId:'',
-    uid:''
-}
-        
-    ]
-}
+        this.state={
+            Members:''
+        }
     }
-    
+// componentDidMount(){
+//     console.log('in compo')
+// var uid=firebase.auth().currentUser.uid
+// console.log('userid'+uid)
+// const rootRef=firebase.database().ref('User');
+// var speedRef=rootRef.child('Private')
+// }
 componentDidMount(){
-    console.log('in private chat')
-const rootRef=firebase.database().ref().child('Group');
-const speedRef=rootRef.child('Members')
-speedRef.on('value',snap => {
-    
-} )
+    console.log('yahan')
+    var uid1=firebase.auth().currentUser.uid
+    console.log('id1'+uid1)
+    //var uid2=firebase.auth().otherUser.uid
+    // console.log('id2'+uid2)
 }
+// GroupChat(){
+// console.log('group')
+// firebase.database().ref('User/')
+
+// }
+
 render(){
     return(
         <div>
-            private chat
+            lol
         </div>
     )
 }
 }
-export default PrivateChat;                                         
+export default PrivateChat

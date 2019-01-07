@@ -41,14 +41,24 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-       
-        firebase.database().ref('messages/').on('value', (snapshot) => {
+        console.log("in did mount",)
 
-            const currentMessages = snapshot.val()
+    //    var userId=firebase.auth().currentUser.uid
+    firebase.database().ref('messages/').on('value', snapshot => {
+        // firebase.database().ref('/messages').on('value', (snapshot) => {
+            if(snapshot.val()){
+                const currentMessages = snapshot.val()
+                console.log("Current",currentMessages)
+                var mess=[];
+                mess.push(currentMessages)
+                this.setState({
+                    messages: mess   
+                })
+            }else{
+                console.log("No data",)
 
-            this.setState({
-                messages: currentMessages   
-            })
+            }
+           
         })
     }
     updateMessage(event) {
@@ -58,13 +68,14 @@ class Chat extends Component {
         })
     }
     submitMessage(event) {
-        console.log('message submitted' + this.state.message)
-        const nextMessage = {
-            id: this.state.messages.length,
-            text: this.state.message,
+    //   var userId=firebase.auth().currentUser.uid
+        console.log('message submitted' , this.state.messages)
+        // const nextMessage = {
+        //     id: this.state.messages.length,
+        //     text: this.state.message,
 
-        }
-        firebase.database().ref('messages/' + nextMessage.id).update(nextMessage)
+        // }
+        // firebase.database().ref('messages/' + nextMessage.id).update(nextMessage)
     }
 
     handleEmojiClick = (n, e) => {
@@ -96,15 +107,16 @@ class Chat extends Component {
                     <Paper style={styles.Paper} >
                         <List >
                             <ListItem variant="contained">
-                                <div>
-                                    {this.state.messages.map((message, i) => (
+                                 
+                                      {/* { this.state.messages.map((message, i) => (
                                         <div>
                                             <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
                                                 <li key={message.id}>{message.text}</li>
                                             </SnackbarContent>
                                         </div>
-                                    ))}
-                                </div>
+                                    ))} */}
+                                    
+                               
                             </ListItem>
                         </List>
                     </Paper>

@@ -12,8 +12,9 @@ import '../mainpage.css'
 import { Input } from '@material-ui/core';
 import Chat from '../chat'
 import *as firebase from 'firebase'
-//  import PrivateChat from '../PrivateChat'
+import PrivateChat from '../PrivateChat'
 import Login from './login'
+
 const styles = ({
     Paper: { padding: 20, marginTop: 10, marginBottom: 10, height: 400, backgroundColor: 'inherit', overflowY: 'auto' },
     listItem: {
@@ -32,26 +33,31 @@ export default class MainPage extends Component {
                 [],
             user: null,
             Group: [],
+            UserDetails:[],
             Members: '',
             AllMessages: [{
                 Message: '',
                 Sender: ''
-            }]
-
-
+            }],
+        all_users:[]
         }
     }
     componentDidMount() {
         console.log('in component did mount')
+    //   var userId=firebase.auth().currentUser.uid
+      
+    firebase.database().ref('/Group/001/members').orderByChild('id').equalTo('umer').once('value', snapshot => {
 
+            console.log("snapshot",snapshot.val());
+        })
 
         firebase.database().ref('User/').on('value', snap => {
             var userobj = snap.val();
             var key = Object.keys(userobj);
-            let all_users = []
+            // let all_users = []
             for (var i = 0; i < key.length; i++) {
                 var k = key[i];
-                all_users.push({
+                this.state.all_users.push({
                     username: userobj[k].username,
                     Age: userobj[k].Age,
                     country: userobj[k].country,
@@ -60,25 +66,53 @@ export default class MainPage extends Component {
                 })
             }
             this.setState({
-                users: all_users
+                users: this.state.all_users
             })
-            console.log(all_users)
+            console.log(this.state.all_users)
         }
         )
     }
-    PrivateChat(event) {
-        console.log('in')
-        const GroupChat = {
+    PrivateChat(index) {
+        var userId=firebase.auth().currentUser.uid
+            console.log('lsd'+userId)
+        var SelectedUser=''
+        SelectedUser=this.state.all_users[index].uid;
+        this.setState({Partcicpents:true,SelectedUser});
+      
+    //members:[{id},{id}{id}{id}]
+        var temp = {id:SelectedUser}
+        firebase.database().ref('Group/002/members').push(  
+        {
+            // ...this.state.SelectedUser,
+            MembersList:SelectedUser,
+            // Messages:this.state.AllMessages,
+            // lastSeen:"this.state.AllMessages",
+            // seen:'seen'
+                }
+        )
 
-            Participents: this.state.Members,
-            Messages: this.state.AllMessages,
-            id: this.state.Group.length,
 
-        }
+        firebase.database().ref('Group/002/messages').push(  
+            {
+              
+                message:"hi",
+                sendBy:SelectedUser
+                    }
+            )
+            
+       firebase.database().ref('UserInGroup').push(
+            {
+                UserId:userId
+            
+            }
+                )
+                firebase.database().ref('/UserInGroup').orderByChild('id').equalTo('umer').once('value', snapshot => {
 
-        firebase.database().ref('Group/' + GroupChat.id).set(GroupChat)
-
-    }
+                    console.log("snapshot",snapshot.val());
+                })
+          
+            }
+    
 
     render() {
         return (
@@ -103,7 +137,7 @@ export default class MainPage extends Component {
                                         {this.state.users.map((item, index) => (
                                             // <SnackbarContent style={{ background: '#212121' }} message={item.username} />
 
-                                            <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} onClick={(event) => this.PrivateChat()}>
+                                            <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} onClick={ this.PrivateChat.bind(this,index)}>
 
                                                 {/* <ListItemText style={styles.listItem } primary= */}
                                                 {item.username}
@@ -134,13 +168,10 @@ export default class MainPage extends Component {
                                 margin="normal"
                                 variant="outlined"
                             />
-
                         </Grid>
                         <Chat />
                     </Grid>
                 </Paper>
-
-
             </div>
         )
     }
