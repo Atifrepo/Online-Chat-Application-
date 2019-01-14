@@ -36,30 +36,52 @@ class Chat extends Component {
             message: '',
             messages: [],
             emojiShown: false,
-           
+            PublicChat: [],
         }
     }
 
     componentDidMount() {
-        console.log("in did mount",)
+        console.log("in did mount")
 
-    //    var userId=firebase.auth().currentUser.uid
-    firebase.database().ref('messages/').on('value', snapshot => {
-        // firebase.database().ref('/messages').on('value', (snapshot) => {
-            if(snapshot.val()){
-                const currentMessages = snapshot.val()
-                console.log("Current",currentMessages)
-                var mess=[];
-                mess.push(currentMessages)
-                this.setState({
-                    messages: mess   
-                })
-            }else{
-                console.log("No data",)
+        //    var userId=firebase.auth().currentUser.uid
+        firebase.database().ref('PublicChat/').on('value', snap => {
+                   var userobj=snap.val();
+                   var key=Object.keys(userobj);
+                   for(var i=0;i <key.length;i++){
+                       var k=key[i];
+                       this.state.PublicChat.push({
+                           ...this.state.PublicChat,
+                           id:userobj[k].id,
+                           text:userobj[k].text,
+                           SentBy:userobj[k].SentBy
+                       })
+                   }
+                   this.setState({
+                       messages:this.state.PublicChat
+                   })
+                   console.log('all',this.state.PublicChat)
 
-            }
-           
-        })
+        // firebase.database().ref('/PublicChat').on('value', (snapshot) => {
+        //     if (snapshot.val()) {
+        //         var userobj = snapshot.val();
+        //         var key = Object.keys(userobj)
+        //         for (var i = 0; i < key.length; i++)
+        //             var k = key[i];
+
+
+        //         const currentMessages = snapshot.val()
+        //         console.log("Current", currentMessages)
+        //         var mess = [];
+        //         mess.push(currentMessages)
+        //         this.setState({
+        //             messages: mess
+        //         })
+        //     } else {
+        //         console.log("No data")
+
+        //     }
+
+         })
     }
     updateMessage(event) {
         console.log('in update message' + event.target.value)
@@ -67,22 +89,22 @@ class Chat extends Component {
             message: event.target.value
         })
     }
-    submitMessage(event) {
-    //   var userId=firebase.auth().currentUser.uid
-        console.log('message submitted' , this.state.messages)
-        // const nextMessage = {
-        //     id: this.state.messages.length,
-        //     text: this.state.message,
-
-        // }
-        // firebase.database().ref('messages/' + nextMessage.id).update(nextMessage)
+    submitMessage() {
+        var userId = firebase.auth().currentUser.uid
+        console.log('message submitted', this.state.messages)
+        const nextMessage = {
+            id: this.state.messages.length,
+            text: this.state.message,
+            SentBy: userId
+        }
+        firebase.database().ref('PublicChat/' + nextMessage.id).update(nextMessage)
     }
 
     handleEmojiClick = (n, e) => {
-        console.log('in handle emoji',e.name)
-        
+        console.log('in handle emoji', e.name)
+
         let emoji = jsemoji.replace_colons(`:${e.name}:`);
-        console.log('in emoji',this.state.message + emoji)
+        console.log('in emoji', this.state.message + emoji)
         this.setState({
             text: this.state.message + emoji
         });
@@ -96,7 +118,7 @@ class Chat extends Component {
 
 
     render() {
-       
+
         return (
 
             <Grid item xs={6} style={{ width: ' 50%', backgroundColor: '#fff', }} >
@@ -106,18 +128,19 @@ class Chat extends Component {
                     </GridListTile>
                     <Paper style={styles.Paper} >
                         <List >
-                            <ListItem variant="contained">
-                                 
-                                      {/* { this.state.messages.map((message, i) => (
-                                        <div>
-                                            <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
-                                                <li key={message.id}>{message.text}</li>
-                                            </SnackbarContent>
-                                        </div>
-                                    ))} */}
+                            {/* <ListItem variant="contained"> */}
+
+                                {this.state.messages.map((message, i) => (
                                     
-                               
-                            </ListItem>
+                                
+                                        <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
+                                            {/* <li key={message.id}>{message.text}</li> */}
+                                        </SnackbarContent>
+                                
+                                ))}
+
+
+                            {/* </ListItem> */}
                         </List>
                     </Paper>
                     <div id="message-sender" style={{ marginTop: 8, position: 'auto', width: '70%', }}>
@@ -129,12 +152,12 @@ class Chat extends Component {
                             variant="outlined"
                             onChange={this.updateMessage} type="text"
                         />
-                        
+
                         <RaisedButton style={{ marginRight: '8rem' }} label="Send" primary={true} onClick={this.submitMessage}>
                         </RaisedButton>
                         <span id="show-emoji-yes" onClick={this.toogleEmojiState}></span>
                         <div className="emoji-table">
-                        {/* <EmojiPicker onEmojiClick={this.handleEmojiClick} /> */}
+                            {/* <EmojiPicker onEmojiClick={this.handleEmojiClick} /> */}
                         </div>
                     </div>
                 </Paper>

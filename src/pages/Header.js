@@ -32,15 +32,15 @@ function ButtonAppBar(props) {
           {/* <Button variant="h4" color="inherit" >الخروج */}
           {/*   logout */}
           {/* </Button> */}
-          
-          
-            <IconButton aria-label="4 pending messages" className={classes.margin}>
-           <Badge badgeContent={4} color="secondary">
-             <MailIcon />
-           </Badge>
-         </IconButton>
+
+
+          <IconButton aria-label="4 pending messages" className={classes.margin}>
+            <Badge badgeContent={4} color="secondary">
+              <MailIcon />
+            </Badge>
+          </IconButton>
           <MenuListComposition />
-          
+
         </Toolbar>
       </AppBar>
     </div>
