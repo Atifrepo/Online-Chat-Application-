@@ -9,7 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import MainPage from './pages/Mainpage';
 import Login from './pages/login';
 import './App.css';
-
+import Chat from './chat'
 
 class App extends Component {
   render() {
@@ -28,6 +28,7 @@ class App extends Component {
             <div>
               <Route exact path='/' component={Login} />
               <Route path='/mainpage' component={MainPage} />
+              <Route path='/chat' component={Chat}/>
             </div>
           </Router>
         </div>

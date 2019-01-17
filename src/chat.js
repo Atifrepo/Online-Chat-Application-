@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper';
+// import Twemoji from 'react-twemoji';
+import EmojiReact from 'react-emoji-react';
 import "./chatRoom.css"
 import RaisedButton from 'material-ui/RaisedButton'
 import List from '@material-ui/core/List';
@@ -19,9 +21,26 @@ jsemoji.img_set = 'emojione';
 // set the storage location for all emojis
 jsemoji.img_sets.emojione.path = 'https://cdn.jsdelivr.net/emojione/assets/3.0/png/32/';
 
-
+const emojis = [
+    {
+      name: 'rage',
+      count: 2
+    },
+    {
+      name: 'blush',
+      count: 1
+    },
+    {
+      name: 100,
+      count: 3
+    },
+    {
+      name: 'grinning',
+      count: 2
+    }
+  ];
 const styles = ({
-    Paper: { marginTop: 10, marginBottom: 10, height: 500, backgroundColor: 'inherit', position: 'relative', overflowY: 'auto' },
+    Paper: { marginTop: 10,  height: 500, backgroundColor: 'inherit', position: 'relative', overflowY: 'auto' },
 
 })
 
@@ -30,13 +49,14 @@ class Chat extends Component {
         super(props, context);
         this.updateMessage = this.updateMessage.bind(this)
         this.submitMessage = this.submitMessage.bind(this)
-        this.toogleEmojiState = this.toogleEmojiState.bind(this)
-        this.handleEmojiClick = this.handleEmojiClick.bind(this)
+        // this.toogleEmojiState = this.toogleEmojiState.bind(this)
+        // this.handleEmojiClick = this.handleEmojiClick.bind(this)
         this.state = {
             message: '',
             messages: [],
             emojiShown: false,
             PublicChat: [],
+            emojis
         }
     }
 
@@ -45,43 +65,43 @@ class Chat extends Component {
 
         //    var userId=firebase.auth().currentUser.uid
         firebase.database().ref('PublicChat/').on('value', snap => {
-                   var userobj=snap.val();
-                   var key=Object.keys(userobj);
-                   for(var i=0;i <key.length;i++){
-                       var k=key[i];
-                       this.state.PublicChat.push({
-                           ...this.state.PublicChat,
-                           id:userobj[k].id,
-                           text:userobj[k].text,
-                           SentBy:userobj[k].SentBy
-                       })
-                   }
-                   this.setState({
-                       messages:this.state.PublicChat
-                   })
-                   console.log('all',this.state.PublicChat)
+            var userobj = snap.val();
+            var key = Object.keys(userobj);
+            for (var i = 0; i < key.length; i++) {
+                var k = key[i];
+                this.state.PublicChat.push({
+                    ...this.state.PublicChat,
+                    id: userobj[k].id,
+                    text: userobj[k].text,
+                    SentBy: userobj[k].SentBy
+                })
+            }
+            this.setState({
+                messages: this.state.PublicChat
+            })
+            console.log('all', this.state.PublicChat)
 
-        // firebase.database().ref('/PublicChat').on('value', (snapshot) => {
-        //     if (snapshot.val()) {
-        //         var userobj = snapshot.val();
-        //         var key = Object.keys(userobj)
-        //         for (var i = 0; i < key.length; i++)
-        //             var k = key[i];
+            // firebase.database().ref('/PublicChat').on('value', (snapshot) => {
+            //     if (snapshot.val()) {
+            //         var userobj = snapshot.val();
+            //         var key = Object.keys(userobj)
+            //         for (var i = 0; i < key.length; i++)
+            //             var k = key[i];
 
 
-        //         const currentMessages = snapshot.val()
-        //         console.log("Current", currentMessages)
-        //         var mess = [];
-        //         mess.push(currentMessages)
-        //         this.setState({
-        //             messages: mess
-        //         })
-        //     } else {
-        //         console.log("No data")
+            //         const currentMessages = snapshot.val()
+            //         console.log("Current", currentMessages)
+            //         var mess = [];
+            //         mess.push(currentMessages)
+            //         this.setState({
+            //             messages: mess
+            //         })
+            //     } else {
+            //         console.log("No data")
 
-        //     }
+            //     }
 
-         })
+        })
     }
     updateMessage(event) {
         console.log('in update message' + event.target.value)
@@ -98,6 +118,26 @@ class Chat extends Component {
             SentBy: userId
         }
         firebase.database().ref('PublicChat/' + nextMessage.id).update(nextMessage)
+    }
+    onReaction(name) {
+        const emojis = this.state.emojis.map(emoji => {
+          if (emoji.name === name) {
+            emoji.count += 1;
+          }
+          return emoji;
+        });
+        this.setState({ emojis,
+            
+         });
+console.log('emojis',emojis)
+    }
+
+      onEmojiClick(name) {
+        console.log(name);
+        const emojis = this.state.emojis.concat([{name, count: 1}]);
+        this.setState({ emojis,
+            text:this.state.messages+emojis });
+        console.log('emojis what',emojis)
     }
 
     handleEmojiClick = (n, e) => {
@@ -130,14 +170,14 @@ class Chat extends Component {
                         <List >
                             {/* <ListItem variant="contained"> */}
 
-                                {this.state.messages.map((message, i) => (
-                                    
-                                
-                                        <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
-                                            {/* <li key={message.id}>{message.text}</li> */}
-                                        </SnackbarContent>
-                                
-                                ))}
+                            {this.state.messages.map((message, i) => (
+
+
+                                <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
+                                    {/* <li key={message.id}>{message.text}</li> */}
+                                </SnackbarContent>
+
+                            ))}
 
 
                             {/* </ListItem> */}
@@ -157,7 +197,15 @@ class Chat extends Component {
                         </RaisedButton>
                         <span id="show-emoji-yes" onClick={this.toogleEmojiState}></span>
                         <div className="emoji-table">
-                            {/* <EmojiPicker onEmojiClick={this.handleEmojiClick} /> */}
+                        {/* <EmojiReact 
+        reactions={this.state.emojis} 
+        onReaction={(name) => this.onReaction(name)} 
+        onEmojiClick={(name) => this.onEmojiClick(name)}
+      /> */}
+                            <EmojiPicker onEmojiClick={this.handleEmojiClick} />
+                            {/* <Twemoji options={{ className: 'twemoji' }}>
+  <p>😂<span>😉</span></p>
+</Twemoji> */}
                         </div>
                     </div>
                 </Paper>

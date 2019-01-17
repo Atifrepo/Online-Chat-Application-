@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import GridListTile from '@material-ui/core/GridListTile';
 import ButtonAppBar from './Header'
+import Popup from "reactjs-popup";
 import '../mainpage.css'
 import { Input } from '@material-ui/core';
 import Chat from '../chat'
@@ -36,7 +37,10 @@ export default class MainPage extends Component {
             GroupChat: [],
             all_Group: [],
             all_users: [],
-                   }
+            main_key: [],
+            current_chat_id: '',
+
+        }
     }
     componentDidMount() {
         console.log('in component did mount')
@@ -68,13 +72,42 @@ export default class MainPage extends Component {
 
             })
             console.log(this.state.all_users)
-}
-   )
+        }
+        )
 
         // firebase.database().ref(`Group/${keys}/Members/`).orderByChild('id').equalTo(atif).once('value', snapshot => {
 
         //     console.log("snapshot", snapshot.val());
         // })
+        firebase.database().ref('AllGroups/').on('value', snapshot => {
+
+            // })
+            var userobj = snapshot.val();
+            if (snapshot.val()) {
+                var key = Object.keys(userobj)
+                // let all_users = []
+                for (var i = 0; i < key.length; i++) {
+                    var k = key[i];
+                    this.state.all_Group.push({
+                        group_id: userobj[k].GroupId,
+                        GroupName: userobj[k].GroupName,
+
+                    })
+                }
+                this.setState({
+
+                    Group: this.state.all_Group
+
+                })
+                console.log(this.state.all_Group)
+
+            }
+
+
+
+
+        }
+        )
 
     }
     updateMessage(event) {
@@ -91,12 +124,12 @@ export default class MainPage extends Component {
         var atif = firebase.auth().currentUser.uid
         console.log('atif submit' + atif)
         //  console.log('selectsumbit'+SelectedUser)
-        var keys = atif + ',' + atif;
+        var keys = this.state.current_chat_id;
         //console.log('message submitted', this.state.messages)
         console.log('sumbit key' + keys)
-        const nextMessage={
+        const nextMessage = {
             text: this.state.message,
-            SentBy: atif   
+            SentBy: atif
         }
         firebase.database().ref(`Group/${keys}/chat/`).push(nextMessage)
     }
@@ -112,13 +145,15 @@ export default class MainPage extends Component {
         var keys = atif + ',' + SelectedUser;
         console.log("keys", keys)
         firebase.database().ref(`Group/${atif},${SelectedUser}/`).set({
-            GroupId: atif + '/' + SelectedUser,
+            GroupId: atif + ',' + SelectedUser,
             GroupName: 'Friends',
-
+            keys: keys
         }).then(succ => {
             firebase.database().ref(`AllGroups/`).push({
-                GroupId: atif + '/' + SelectedUser,
-                GroupName: 'Friends',
+                GroupId: atif + ',' + SelectedUser,
+                GroupName: this.state.all_users[index].username,
+                Member1: atif,
+                Member2: SelectedUser,
 
             })
         })
@@ -133,34 +168,67 @@ export default class MainPage extends Component {
             id: SelectedUser,
             Date: "110eejh"
         })
-        firebase.database().ref(`Group/${keys}/Members/`).orderByChild('id').equalTo(atif).once('value', snapshot => {
+        // firebase.database().ref(`Group/${keys}/Members/`).orderByChild('id').equalTo(atif).once('value', snapshot => {
 
-            console.log("snapshot", snapshot.val());
-            var userobj = snapshot.val();
-            var key = Object.keys(userobj)
-            // let all_users = []
-            for (var i = 0; i < key.length; i++) {
-                var k = key[i];
-                this.state.all_Group.push({
+        //     console.log("snapshot", snapshot.val());
+        //     var userobj = snapshot.val();
+        //     var key = Object.keys(userobj)
+        //     // let all_users = []
+        //     for (var i = 0; i < key.length; i++) {
+        //         var k = key[i];
+        //         this.state.all_Group.push({
 
-                    GroupName: userobj[k].GroupName,
+        //             GroupName: userobj[k].GroupName,
 
+        //         })
+        //     }
+
+        //     this.setState({
+
+        //         Group: this.state.all_Group,
+        //          keys:this.state.main_key
+        //     })
+        //     console.log(this.state.all_Group)
+        //     console.log('key'+this.state.main_key)
+
+        // }
+        // )
+
+    }
+
+    DisplayMessages(index) {
+        console.log('in display ');
+        this.setState({
+            GroupChat: []
+
+        })
+
+        var atif = firebase.auth().currentUser.uid
+        console.log('keys index umer ', this.state.Group[index]);
+        var keys = this.state.Group[index].group_id;
+        console.log('keys display' + keys);
+        this.setState({ current_chat_id: keys });
+
+        firebase.database().ref(`Group/${keys}/chat/`).on('value', snap => {
+            var userobj = snap.val();
+            if (snap.val()) {
+                var key = Object.keys(userobj);
+                for (var i = 0; i < key.length; i++) {
+                    var k = key[i];
+                    this.state.GroupChat.push({
+                        // ...this.state.GroupChat,
+
+                        text: userobj[k].text,
+                        SentBy: userobj[k].SentBy
+                    })
+                }
+                this.setState({
+                    messages: this.state.GroupChat
                 })
-            }
+                console.log('all', this.state.GroupChat)
+            }// if closing 
+        })
 
-            this.setState({
-
-                Group: this.state.all_Group
-
-            })
-            console.log(this.state.all_Group)
-
-
-        }
-        )
-
-        
-   
     }
 
     render() {
@@ -175,12 +243,21 @@ export default class MainPage extends Component {
                 <Paper style={{ backgroundColor: '#e0e0e0' }}>
                     <Grid container spacing={40}>
                         <Grid item xs={3} style={{ width: '30%', backgroundColor: '#212121', }}>
+
                             {/* overflowY: 'scroll' */}
                             <GridListTile key="h2" cols={2} style={{ height: 'auto', backgroundColor: '#424242' }}>
                                 <Typography variant="h5" color="inherit">مستخدم على الانترنت</Typography>
                             </GridListTile>
                             <Paper style={styles.Paper}>
-
+                                {/* <Popup trigger={<button> Trigger</button>} position="right center">
+    <div>
+        <Input
+        name="Group Name"
+        placeholder="Enter Group Name"
+        onChange
+        />
+    </div>
+  </Popup> */}
                                 <GridListTile>
 
                                     <List component="ul">
@@ -220,71 +297,82 @@ export default class MainPage extends Component {
                                 variant="outlined"
                             />
                         </Grid>
-                        <Paper style={styles.Paper} >
-                        <List >
-                            {/* <ListItem variant="contained"> */}
 
-                                {this.state.messages.map((message, i) => (
-                                    
-                                
-                                        <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
-                                            <li key={message.id}>{message.text}</li>
-                                        </SnackbarContent>
-                                
-                                ))}
-
-
-                            {/* </ListItem> */}
-                        </List>
-                    </Paper>
-                        {/* <Chat /> */}
-                        
-                        {/* <GroupChat /> */}
-                    <Paper>
+{/* 
                         <Grid item xs={3} style={{ width: '50%', backgroundColor: '#FFFFFF' }}>
-                        
-                        <TextField style={{ width: '40%', marginLeft: 0, height: '20%' }}
-                            // id="outlined-full-width"
-                            style={{ margin: 8 }}
-                            placeholder="Type message.."
-                            fullWidth
-                            variant="outlined"
-                            onChange={this.updateMessage} type="text"
-                        />
+                            <Paper>
+                                <GridListTile key="h2" cols={2} style={{ height: 'auto', backgroundColor: '#526dca' }}>
+                                    <Typography variant="h5" color="inherit">دردشة عامة</Typography>
+                                </GridListTile>
+                                <Paper style={styles.Paper} >
+                                    <List >
 
-                        <RaisedButton style={{ marginRight: '8rem' }} label="Send" primary={true} onClick={this.submitMessage}>
-                        </RaisedButton>
-                        </Grid>
-                        </Paper>
-                <Grid item xs={3} style={{ width: '20%', backgroundColor: '#212121' }}>
-                <GridListTile key="h2" cols={2} style={{ height: 'auto', backgroundColor: '#424242' }}>
-                    <Typography variant="h5" color="inherit">مجموعة محادثة</Typography>
-                </GridListTile>
-                <Paper style={styles.Paper}>
 
-                    <GridListTile>
+                                        {this.state.messages.map((message, i) => (
 
-                        <List component="ul">
-                            {this.state.Group.map((item, index) => (
-                                //  <SnackbarContent style={{ background: '#212121' }} message={item.username} /> 
 
-                                <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} >
+                                            <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
+                                                <li key={message.id}>{message.text}</li>
+                                            </SnackbarContent>
 
-                                    <ListItemText style={styles.listItem} primary=
-                                        {item.GroupName}
+                                        ))}
 
+
+
+                                    </List>
+                                </Paper> */}
+                                <Chat />
+
+
+
+{/* 
+                                <div id="message-sender" style={{ marginTop: 8, position: 'auto', width: '70%', }}>
+                                    <TextField style={{ width: '40%', marginLeft: 0, height: '20%' }}
+                                        // id="outlined-full-width"
+                                        style={{ margin: 8 }}
+                                        placeholder="Type message.."
+                                        fullWidth
+                                        variant="outlined"
+                                        onChange={this.updateMessage} type="text"
                                     />
 
-                                </ListItem>
-                            ))}
+                                    <RaisedButton style={{ marginRight: '8rem' }} label="Send" primary={true} onClick={this.submitMessage}>
+                                    </RaisedButton>
+                                </div>
 
-                        </List>
+                            </Paper>
+                        </Grid> */}
 
-                    </GridListTile>
-                </Paper>
-            </Grid>
-            </Grid>
-                    
+
+                        <Grid item xs={3} style={{ width: '20%', backgroundColor: '#212121' }}>
+                            <GridListTile key="h2" cols={2} style={{ height: 'auto', backgroundColor: '#424242' }}>
+                                <Typography variant="h5" color="inherit">مجموعة محادثة</Typography>
+                            </GridListTile>
+                            <Paper style={styles.Paper}>
+
+                                <GridListTile>
+
+                                    <List component="ul">
+                                        {this.state.Group.map((item, index) => (
+                                            //  <SnackbarContent style={{ background: '#212121' }} message={item.username} /> 
+
+                                            <ListItem button variant="contained" style={{ backgroundColor: '#424242', }} onClick={this.DisplayMessages.bind(this, index)} >
+
+                                                {/* <ListItemText style={styles.listItem} primary= */}
+                                                {item.GroupName}
+
+                                                {/* /> */}
+
+                                            </ListItem>
+                                        ))}
+
+                                    </List>
+
+                                </GridListTile>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+
                 </Paper>
             </div>
         )

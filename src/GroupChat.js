@@ -49,7 +49,7 @@ class GroupChat extends Component {
     //         console.log('kr'+this.state.all_Group)
     //     })
     // }
-   
+
     componentDidMount() {
         console.log('in group chat componnet')
 
@@ -57,38 +57,36 @@ class GroupChat extends Component {
         // console.log('id my'+atif)
         // // firebase.database().ref(`Group/Members`).orderByChild('id').equalTo(atif).once('value', snapshot => {
 
-            // console.log("snapshot", snapshot.val());
-// firebase.database().ref('Group/').on('value',snapshot => {
+        // console.log("snapshot", snapshot.val());
+        firebase.database().ref('AllGroups/').on('value', snapshot => {
 
-// // })
-//             var userobj = snapshot.val();
-//             var key = Object.keys(userobj)
-//             // let all_users = []
-//             for (var i = 0; i < key.length; i++) {
-//                 var k = key[i];
-//                 this.state.all_Group.push({
+            // })
+            var userobj = snapshot.val();
+            var key = Object.keys(userobj)
+            // let all_users = []
+            for (var i = 0; i < key.length; i++) {
+                var k = key[i];
+                this.state.all_Group.push({
 
-//                     GroupName: userobj[k].GroupName,
+                    GroupName: userobj[k].GroupName,
 
-//                 })
-//             }
+                })
+            }
 
-//             this.setState({
+            this.setState({
 
-//                 Group: this.state.all_Group
+                Group: this.state.all_Group
 
-//             })
-//             console.log(this.state.all_Group)
+            })
+            console.log(this.state.all_Group)
 
 
-//         }
-//         )
+        }
+        )
 
 
     }
 
-    UserInGroup() {
- }
 
     render() {
         return (
