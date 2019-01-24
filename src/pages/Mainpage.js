@@ -51,7 +51,7 @@ export default class MainPage extends Component {
         //     console.log("snapshot", snapshot.val());
         // })
 
-        firebase.database().ref('User/').on('value', snap => {
+        firebase.database().ref('Users/').on('value', snap => {
             var userobj = snap.val();
             var key = Object.keys(userobj);
             // let all_users = []
@@ -298,8 +298,8 @@ export default class MainPage extends Component {
                             />
                         </Grid>
 
-{/* 
-                        <Grid item xs={3} style={{ width: '50%', backgroundColor: '#FFFFFF' }}>
+
+                        <Grid item xs={6} style={{ width: '50%', backgroundColor: '#FFFFFF' }}>
                             <Paper>
                                 <GridListTile key="h2" cols={2} style={{ height: 'auto', backgroundColor: '#526dca' }}>
                                     <Typography variant="h5" color="inherit">دردشة عامة</Typography>
@@ -320,12 +320,12 @@ export default class MainPage extends Component {
 
 
                                     </List>
-                                </Paper> */}
-                                <Chat />
+                                </Paper> 
+                                {/* <Chat /> */}
 
 
 
-{/* 
+
                                 <div id="message-sender" style={{ marginTop: 8, position: 'auto', width: '70%', }}>
                                     <TextField style={{ width: '40%', marginLeft: 0, height: '20%' }}
                                         // id="outlined-full-width"
@@ -341,7 +341,7 @@ export default class MainPage extends Component {
                                 </div>
 
                             </Paper>
-                        </Grid> */}
+                        </Grid> 
 
 
                         <Grid item xs={3} style={{ width: '20%', backgroundColor: '#212121' }}>

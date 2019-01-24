@@ -3,7 +3,13 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper';
 // import Twemoji from 'react-twemoji';
+import ReactEmojiSelector from 'react-emoji-selector'
+import Button from '@material-ui/core/Button';
+import 'react-emoji-selector/lib/react-emoji-selector.css'
 import EmojiReact from 'react-emoji-react';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+import MyEmojiInput from './newemoji'
 import "./chatRoom.css"
 import RaisedButton from 'material-ui/RaisedButton'
 import List from '@material-ui/core/List';
@@ -14,6 +20,7 @@ import JSEMOJI from 'emoji-js';
 import { TextField, SnackbarContent } from '@material-ui/core';
 import *as firebase from 'firebase'
 import EmojiPicker from 'emoji-picker-react';
+import Emoji from './Emoji'
 //emoji set up
 let jsemoji = new JSEMOJI();
 // set the style to emojione (default - apple)
@@ -23,26 +30,32 @@ jsemoji.img_sets.emojione.path = 'https://cdn.jsdelivr.net/emojione/assets/3.0/p
 
 const emojis = [
     {
-      name: 'rage',
-      count: 2
+        name: 'rage',
+        count: 2
     },
     {
-      name: 'blush',
-      count: 1
+        name: 'blush',
+        count: 1
     },
     {
-      name: 100,
-      count: 3
+        name: 100,
+        count: 3
     },
     {
-      name: 'grinning',
-      count: 2
+        name: 'grinning',
+        count: 2
     }
-  ];
+];
 const styles = ({
-    Paper: { marginTop: 10,  height: 500, backgroundColor: 'inherit', position: 'relative', overflowY: 'auto' },
+    Paper: { marginTop: 10, height: 500, backgroundColor: 'inherit', position: 'relative', overflowY: 'auto' },
 
 })
+const action = (
+    <Button color="secondary" size="small">
+        {}
+    </Button>
+);
+
 
 class Chat extends Component {
     constructor(props, context) {
@@ -59,6 +72,7 @@ class Chat extends Component {
             emojis
         }
     }
+
 
     componentDidMount() {
         console.log("in did mount")
@@ -102,6 +116,15 @@ class Chat extends Component {
             //     }
 
         })
+
+    }
+    selectEmoji(emoji) {
+        this.setState({
+            emoji: this.state.emojis,
+
+            text: this.state.message + emoji
+        }) // {emoji: "🚀", key: "rocket"}
+        console.log('eoji', emoji)
     }
     updateMessage(event) {
         console.log('in update message' + event.target.value)
@@ -114,30 +137,33 @@ class Chat extends Component {
         console.log('message submitted', this.state.messages)
         const nextMessage = {
             id: this.state.messages.length,
-            text: this.state.message,
+            text: this.state.message + emojis,
             SentBy: userId
         }
         firebase.database().ref('PublicChat/' + nextMessage.id).update(nextMessage)
     }
     onReaction(name) {
         const emojis = this.state.emojis.map(emoji => {
-          if (emoji.name === name) {
-            emoji.count += 1;
-          }
-          return emoji;
+            if (emoji.name === name) {
+                emoji.count += 1;
+            }
+            return emoji;
         });
-        this.setState({ emojis,
-            
-         });
-console.log('emojis',emojis)
+        this.setState({
+            emojis,
+
+        });
+        console.log('emojis', emojis)
     }
 
-      onEmojiClick(name) {
+    onEmojiClick(name) {
         console.log(name);
-        const emojis = this.state.emojis.concat([{name, count: 1}]);
-        this.setState({ emojis,
-            text:this.state.messages+emojis });
-        console.log('emojis what',emojis)
+        const emojis = this.state.emojis.concat([{ name, count: 1 }]);
+        this.setState({
+            emojis,
+            text: this.state.messages + emojis
+        });
+        console.log('emojis what', emojis)
     }
 
     handleEmojiClick = (n, e) => {
@@ -149,17 +175,18 @@ console.log('emojis',emojis)
             text: this.state.message + emoji
         });
     }
-    toogleEmojiState = () => {
-        console.log('in toogle')
-        this.setState({
-            emojiShown: !this.state.emojiShown
-        });
-    }
+    // toogleEmojiState = () => {
+    //     console.log('in toogle')
+    //     this.setState({
+    //         emojiShown: !this.state.emojiShown
+    //     });
+    // }
 
 
     render() {
 
         return (
+
 
             <Grid item xs={6} style={{ width: ' 50%', backgroundColor: '#fff', }} >
                 <Paper >
@@ -173,7 +200,7 @@ console.log('emojis',emojis)
                             {this.state.messages.map((message, i) => (
 
 
-                                <SnackbarContent style={{ background: '#526DCA' }} message={message.text}>
+                                <SnackbarContent style={{ background: '#526DCA' }} message={message.text} action={action}>
                                     {/* <li key={message.id}>{message.text}</li> */}
                                 </SnackbarContent>
 
@@ -192,20 +219,14 @@ console.log('emojis',emojis)
                             variant="outlined"
                             onChange={this.updateMessage} type="text"
                         />
+                        {/* <Emoji/> */}
 
                         <RaisedButton style={{ marginRight: '8rem' }} label="Send" primary={true} onClick={this.submitMessage}>
                         </RaisedButton>
                         <span id="show-emoji-yes" onClick={this.toogleEmojiState}></span>
                         <div className="emoji-table">
-                        {/* <EmojiReact 
-        reactions={this.state.emojis} 
-        onReaction={(name) => this.onReaction(name)} 
-        onEmojiClick={(name) => this.onEmojiClick(name)}
-      /> */}
-                            <EmojiPicker onEmojiClick={this.handleEmojiClick} />
-                            {/* <Twemoji options={{ className: 'twemoji' }}>
-  <p>😂<span>😉</span></p>
-</Twemoji> */}
+
+
                         </div>
                     </div>
                 </Paper>

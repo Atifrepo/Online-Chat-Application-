@@ -10,6 +10,7 @@ import MainPage from './pages/Mainpage';
 import Login from './pages/login';
 import './App.css';
 import Chat from './chat'
+import Signup from './pages/Signup'
 
 class App extends Component {
   render() {
@@ -27,8 +28,10 @@ class App extends Component {
           <Router>
             <div>
               <Route exact path='/' component={Login} />
+              <Route path='/Signup' component={Signup}/>
               <Route path='/mainpage' component={MainPage} />
               <Route path='/chat' component={Chat}/>
+              
             </div>
           </Router>
         </div>

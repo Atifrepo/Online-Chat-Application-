@@ -1,31 +1,12 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid'
-import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton';
-import InputLabel from '@material-ui/core/InputLabel';
 import * as firebase from 'firebase';
 import AppBar from 'material-ui/AppBar/AppBar';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom'
 import '../login.css'
-
-
-import Input from '@material-ui/core/Input';
-const style = theme => ({
-    Paper: {
-        marginTop: 10, marginBottom: 10, height: 500, backgroundColor: 'inherit', position: 'relative',
-        overflowY: 'auto'
-    },
-
-    group: {
-        margin: `${theme.spacing.unit}px 0`,
-    },
-    formControl: {
-        margin: theme.spacing.unit * 3,
-    },
-    
-})
+import Signup from './Signup'
 
 class Login extends Component {
 
@@ -33,6 +14,8 @@ class Login extends Component {
         super();
         this.state = {
             Details: {
+                Email:'',
+                password:'',
                 username: '',
                 country: '',
                 Age: '',
@@ -41,53 +24,42 @@ class Login extends Component {
             },
            
            
-            // error: 'this is error'
+            error: 'this is error'
         }
        
     }
-   _handleClick = (event) =>{
-        firebase.auth().signInAnonymously().catch(function(error) {
+    handleClick(event) {
+        firebase.auth().signInWithEmailAndPassword(this.state.Details.Email,this.state.Details.password).then((error)=> {
+          // Handle Errors here.
+           var typeCheck;
+            var userId = firebase.auth().currentUser.uid;
+            this.setState({userId:userId})
+            const rootRef= firebase.database().ref();
+            const speedRef = rootRef.child('Users/'+userId);
+            speedRef.on('value',snap => {
+            //  typeCheck=snap.val().Email;
+             console.log('email',speedRef);
+             if(this.state.Details.Email==='admin@gmail.com'){
+               this.props.history.push('/signup');
+             }
+           else{
+              this.props.history.push('/mainpage');
+           }
             
-
+         
+        })
             
+        
+        })
+        // .catch((error)=>{
+        // var errorCode = error.code;
+        //   var errorMessage = error.message;
+        //   console.log("err",errorCode);
+           
+        // });
           
-        // if (this.state.Details.username != null) {
-        //     this.props.history.push('/mainpage')
-        // }
-
-      }).then( (succ) => {
-
-       // firebase.auth().onAuthStateChanged(function(user) {
-
-            var userid=0
-          //  if(user){
-              //   userid=firebase.auth().user.uid
-             console.log('user',this.state)
-              firebase.database().ref('User/'+ succ.user.uid).set(
-                 {
-                     username: this.state.Details.username,
-                     country: this.state.Details.country,
-                     Age: this.state.Details.Age,
-                     gender: this.state.Details.gender,
-                    uid:succ.user.uid,
-                
-                     
-                 }
-    
-            );
-     console.log('id'+succ.user.uid)
-            // }else{
-            //  console.log('in else',user)
-            // }
            
-           
-             // ...
-         //  });
-      })
-    this.props.history.push('/mainpage')
-    }
-      ;
-
+          }
     InputChange(changeValue, event) {
 
         this.state.Details[changeValue] = event.target.value;
@@ -97,20 +69,10 @@ class Login extends Component {
         });
 
     }
-    // handleChange = event => {
-    //     this.setState({ value: event.target.value });
-    // };
 
-SeletGender(event) {
-    this.setState({
-        gender:event.target.value
-    })
-    console.log(this.state.gender)
-}
+
     render() {
         return (
-
-
             <div>
                 <form>
                     <div style={{ backgroundColor: '#3F51B5' }} className="App-header">
@@ -119,17 +81,17 @@ SeletGender(event) {
                     </div>
                     <div align="center">
                     
-                        <Paper style={{ paddingRight: 100, marginTop: 100, height: 400, backgroundColor: '#3F51B5', width: '40%' }}>
+                        <Paper style={{ paddingRight: 100, marginTop: 100, height: 300, backgroundColor: '#3F51B5', width: '40%' }}>
                             <h1>انضم للمحادثه</h1>
                            
                             {/* <InputLabel>Username</InputLabel> */}
                             <OutlinedInput
-                                placeholder="Enter your username"
+                                placeholder="Enter your email"
                                 id="outlined-name"
                                 style={{ width: '60%' }}
                                 // className={classes.textField}
-                                value={this.state.username}
-                                onChange={this.InputChange.bind(this, 'username')}
+                                value={this.state.Details.Email}
+                                onChange={this.InputChange.bind(this, 'Email')}
                                 margin="normal"
                                 variant="outlined"
                             />
@@ -139,41 +101,27 @@ SeletGender(event) {
                             {/* <InputLabel>Age</InputLabel> */}
                             <OutlinedInput
                                 //  name="Username"
-                                placeholder="Enter Age"
+                                placeholder="Enter password"
                                 style={{ width: '60%' }}
-                                value={this.state.Details.Age}
-                                onChange={this.InputChange.bind(this, "Age")}
+                                value={this.state.Details.password}
+                                onChange={this.InputChange.bind(this, "password")}
                             //errorText="This field is required!"
 
                             />
                             <br></br>
                             <br></br>
 
-                            <div  style={{ width: '60%' }} className='radioButton'
-                            value={this.state.gender}
-                            onChange={this.InputChange.bind(this)}
-                             > 
-                            Gender
-                             <input type='radio' value='Male' name='user' /> Male
-                          <input type='radio' value='Female' name='user' /> Female
-                        </div>
-                            <br></br>
+                           
+                            <Button variant="contained" color="#E3F2FD" onClick={(event) => this.handleClick(event)}><b>login</b></Button>
+               
+               <Link to={{
+                        pathname: '/Signup',
+                        data: this.state.Details
 
 
-{/* <InputLabel>country</InputLabel>   */}
-                            <OutlinedInput
-                                //  name="Username"
-                                placeholder="Enter country name"
-
-                                value={this.state.Details.country}
-                                style={{ width: '60%' }}
-                                onChange={this.InputChange.bind(this, "country")}
-                            //errorText="This field is required!"
-                            />
-
-                            <br></br>
-<br></br>
-                            <Button variant="contained" color="#E3F2FD" onClick={(event) => this._handleClick(event)}><b>login</b></Button>
+                    }}>
+                    <Button variant="contained" color="#E3F2FD">Not a user?</Button>
+                    </Link>
                </Paper>
                     </div>
                 </form>
