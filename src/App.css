@@ -10,6 +10,12 @@
   color: white;
   font-size: large;
 }
+.background{
+  position: absolute;
+     background-image: url('background.jpg');
+        background-size: 600px 400px;
+        background-repeat: no-repeat;
+}
 
 .App-intro {
   font-size: large;

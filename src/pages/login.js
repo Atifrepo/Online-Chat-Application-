@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom'
 import '../login.css'
 import Signup from './Signup'
+import backgrbund from '../background.jpg'
 
 class Login extends Component {
 
@@ -74,14 +75,15 @@ class Login extends Component {
     render() {
         return (
             <div>
+
                 <form>
-                    <div style={{ backgroundColor: '#3F51B5' }} className="App-header">
-                        <AppBar style={{ backgroundColor: '#002171' }} title='تسجيل الدخول' //login// 
+                    <div style={{ backgroundColor: '#757575' }} className="App-header">
+                        <AppBar style={{ backgroundColor: '#616161' }} title='تسجيل الدخول' //login// 
                         ></AppBar>
                     </div>
                     <div align="center">
                     
-                        <Paper style={{ paddingRight: 100, marginTop: 100, height: 300, backgroundColor: '#3F51B5', width: '40%' }}>
+                        <Paper style={{ paddingRight: 100, marginTop: 100, height: 300, backgroundColor: '#616161', width: '40%' }}>
                             <h1>انضم للمحادثه</h1>
                            
                             {/* <InputLabel>Username</InputLabel> */}

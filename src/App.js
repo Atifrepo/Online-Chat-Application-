@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import {
   BrowserRouter as Router,
   Route,
@@ -11,11 +10,11 @@ import Login from './pages/login';
 import './App.css';
 import Chat from './chat'
 import Signup from './pages/Signup'
-
+// import Theme from './pages/theme';
 class App extends Component {
   render() {
     return (
-
+<div className="backgorund">
       <MuiThemeProvider>
 
         <div className="App">
@@ -31,11 +30,13 @@ class App extends Component {
               <Route path='/Signup' component={Signup}/>
               <Route path='/mainpage' component={MainPage} />
               <Route path='/chat' component={Chat}/>
-              
+              {/* <Route path='/theme' component={Theme}/> */}
             </div>
           </Router>
         </div>
+        
       </MuiThemeProvider>
+    </div>
     );
   }
 }
